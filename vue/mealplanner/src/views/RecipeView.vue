@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import CookingInstructions from "@/components/CookingInstructions.vue";
+import CookingInstructions from "@/components/recipelist/CookingInstructions.vue";
 
 const router = useRouter();
 const recipeId = Number(router.currentRoute.value.params.id);

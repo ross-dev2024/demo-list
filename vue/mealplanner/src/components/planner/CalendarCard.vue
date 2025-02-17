@@ -6,7 +6,7 @@ const emits = defineEmits(["daySelected"]);
 import { usePlannerStore } from "@/stores/planner";
 const store = usePlannerStore();
 
-import AppLink from "./AppLink.vue";
+import AppLink from "@/components/AppLink.vue";
 
 interface Today {
   id: number;

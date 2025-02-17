@@ -6,8 +6,8 @@ import {useRecipeInformation} from "@/composables/recipeApi";
 
 import {usePlannerStore} from "@/stores/planner";
 import {useCacheStore} from "@/stores/cache";
-import CalendarCard from "@/components/CalendarCard.vue";
-import RecipeSearch from "@/components/RecipeSearch.vue";
+import CalendarCard from "@/components/planner/CalendarCard.vue";
+import RecipeSearch from "@/components/planner/RecipeSearch.vue";
 
 const store = usePlannerStore();
 

@@ -6,8 +6,8 @@ import type {Recipe} from "@/types/spoonacular";
 
 
 import {usePlannerStore} from "@/stores/planner";
-import RecipeTable from "./RecipeTable.vue";
-import CookingInstructions from "./CookingInstructions.vue";
+import RecipeTable from "./recipelist/RecipeTable.vue";
+import CookingInstructions from "./recipelist/CookingInstructions.vue";
 import AppLink from "./AppLink.vue";
 
 const store = usePlannerStore();

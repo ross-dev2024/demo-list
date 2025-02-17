@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 
-import CalendarDays from "./CalendarDays.vue";
+import CalendarDays from "@/components/planner/CalendarDays.vue";
 
 import {usePlannerStore} from "@/stores/planner";
 

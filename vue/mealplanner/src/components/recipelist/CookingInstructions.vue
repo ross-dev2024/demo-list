@@ -5,7 +5,7 @@ import type { Recipe } from "@/types/spoonacular";
 
 import { useRecipeInformation } from "@/composables/recipeApi";
 
-import AppLoader from "./AppLoader.vue";
+import AppLoader from "../AppLoader.vue";
 import RecipeRating from "./RecipeRating.vue";
 
 import { useCacheStore } from "@/stores/cache";
@@ -49,9 +49,9 @@ onMounted(() => {
     <v-col>
       <v-img height="200" :src="recipe.image" cover v-if="recipe.image" />
       <h1 class="text-h3 ma-4">{{ recipe.title }}</h1>
-      
+
       <recipe-rating :id="recipe.id" />
-      
+
       <v-chip
         class="ma-2 my-4"
         color="primary"
