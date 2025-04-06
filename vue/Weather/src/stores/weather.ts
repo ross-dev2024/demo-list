@@ -27,12 +27,13 @@ export const useWeatherStore = defineStore('weather', () => {
   const error = ref('')
 
   const addForecast = (forecast: WeatherForecast) => {
-    // 同じ地名の天気予報が既に存在するかチェック
-    const exists = forecasts.value.some(f => f.place.name === forecast.place.name)
-    if (exists) {
-      throw new Error(`${forecast.place.name}の天気予報は既に表示されています。`)
+    // 重複チェック
+    if (forecasts.value.some(f => f.place.name === forecast.place.name)) {
+      throw new Error(`${forecast.place.name}の天気予報は既に追加されています。`)
     }
-    forecasts.value.push(forecast)
+    
+    // 新しい予報を配列の先頭に追加
+    forecasts.value.unshift(forecast)
   }
 
   const removeForecast = (placeName: string) => {

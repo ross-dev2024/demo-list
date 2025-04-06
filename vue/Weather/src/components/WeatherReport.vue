@@ -332,7 +332,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin-top: 5rem;
+  margin-top: 6rem;
 }
 
 .search-card {
@@ -495,7 +495,7 @@ onMounted(async () => {
 
   .main-content {
     padding: 1rem;
-    margin-top: 5rem;
+    margin-top: 7rem;
   }
 
   .search-card :deep(.el-card__body),
