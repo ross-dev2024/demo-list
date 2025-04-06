@@ -291,12 +291,19 @@ onMounted(async () => {
 .weather-app {
   min-height: 100vh;
   background: var(--el-bg-color-page);
+  padding: 0 2rem;
 }
 
 .header {
   background: var(--el-color-primary);
-  padding: 2rem 0;
+  padding: 1rem 0;
   border-bottom: none;
+  margin: 0 -2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .header-content {
@@ -307,7 +314,7 @@ onMounted(async () => {
 
 .header-title {
   color: var(--el-color-white);
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
 }
@@ -315,7 +322,7 @@ onMounted(async () => {
 .header-subtitle {
   color: var(--el-color-white-light-3);
   font-size: 0.875rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .main-content {
@@ -325,6 +332,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  margin-top: 5rem;
 }
 
 .search-card {
@@ -472,17 +480,22 @@ onMounted(async () => {
 }
 
 @media (max-width: 640px) {
-  .header {
-    padding: 1.25rem 0;
+  .weather-app {
+    padding: 0;
   }
 
-  .header-title {
-    font-size: 1.5rem;
+  .header {
+    margin: 0;
+    padding: 1rem 0;
+  }
+
+  .header-content {
+    padding: 0 1rem;
   }
 
   .main-content {
     padding: 1rem;
-    gap: 1rem;
+    margin-top: 5rem;
   }
 
   .search-card :deep(.el-card__body),
