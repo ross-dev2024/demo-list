@@ -2,6 +2,9 @@
 import { ref, onMounted } from "vue";
 import type { Ref } from 'vue'
 import DailyWeather from './DailyWeather.vue';
+import { ElMessage } from 'element-plus'
+import { Search, Location } from '@element-plus/icons-vue'
+import 'element-plus/dist/index.css'
 
 // Nominatim APIのレスポンス型定義 (必要な部分のみ)
 type NominatimResult = {
@@ -202,63 +205,255 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="weather-app">
     <!-- ヘッダー -->
-    <header class="bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg">
-      <div class="max-w-[1440px] mx-auto px-6 py-4">
-        <h1 class="text-2xl font-bold">天気予報</h1>
-        <p class="text-blue-100 text-sm">5日間の天気をチェック</p>
+    <header class="header">
+      <div class="header-content">
+        <h1 class="header-title">天気予報</h1>
+        <p class="header-subtitle">素敵な旅のために、目的地の天気をチェックしよう！</p>
       </div>
     </header>
 
     <!-- メインコンテンツ -->
-    <main class="max-w-[1440px] mx-auto p-6">
+    <main class="main-content">
       <!-- 検索フォーム -->
-      <div class="mb-6 max-w-xl mx-auto">
-        <div class="flex gap-2">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="地名を入力（例：横浜、新宿、etc...）"
-            class="flex-grow p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            @keyup.enter="handleSearch"
-          />
-          <button
-            @click="handleSearch"
-            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors shadow-sm whitespace-nowrap"
-            :disabled="isLoading"
-          >
-            <span v-if="isLoading">検索中...</span>
-            <span v-else>検索</span>
-          </button>
+      <el-card class="search-card">
+        <div class="search-container">
+          <div class="search-form">
+            <el-input
+              v-model="searchQuery"
+              placeholder="地名を入力（例：横浜、新宿、etc...）複数入力可"
+              :prefix-icon="Search"
+              @keyup.enter="handleSearch"
+              class="search-input"
+            />
+            <el-button
+              type="primary"
+              :loading="isLoading"
+              @click="handleSearch"
+              class="search-button"
+            >
+              検索
+            </el-button>
+          </div>
+          <p v-if="error" class="error-message">{{ error }}</p>
         </div>
-        <p v-if="error" class="text-red-500 mt-2 text-sm">{{ error }}</p>
-      </div>
+      </el-card>
 
       <!-- ローディング表示 -->
-      <div v-if="isLoading" class="text-center py-8">
-        <div class="text-gray-600">天気情報を取得中...</div>
-      </div>
+      <el-card v-if="isLoading" class="loading-card">
+        <div class="loading-container">
+          <el-icon class="is-loading loading-icon"><Loading /></el-icon>
+          <span>天気情報を取得中...</span>
+        </div>
+      </el-card>
 
       <!-- 天気予報の表示 -->
-      <div v-if="dailyForecast && currentPlace && !isLoading" 
-           class="bg-white rounded-lg shadow-lg p-4">
-        <h2 class="text-xl font-bold mb-4 text-center text-gray-800">
-          {{ currentPlace.name }}の天気予報
-        </h2>
-        
-        <div class="flex justify-center gap-4">
-          <DailyWeather
-            v-for="day in dailyForecast"
-            :key="day.date"
-            v-bind="day"
-          />
+      <el-card v-if="dailyForecast && currentPlace && !isLoading" class="forecast-card">
+        <div class="forecast-container">
+          <h2 class="location-title">
+            <el-icon><Location /></el-icon>
+            {{ currentPlace.name }}の天気予報
+          </h2>
+          
+          <div class="forecast-cards">
+            <DailyWeather
+              v-for="day in dailyForecast"
+              :key="day.date"
+              v-bind="day"
+            />
+          </div>
         </div>
-      </div>
+      </el-card>
     </main>
   </div>
 </template>
 
 <style scoped>
-/* スタイルが必要な場合はここに追加 */
+.weather-app {
+  min-height: 100vh;
+  background: var(--el-bg-color-page);
+}
+
+.header {
+  background: var(--el-color-primary);
+  padding: 2rem 0;
+  border-bottom: none;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.header-title {
+  color: var(--el-color-white);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header-subtitle {
+  color: var(--el-color-white-light-3);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.search-card {
+  border: none;
+  border-radius: 12px;
+  background: var(--el-bg-color);
+  box-shadow: var(--el-box-shadow-light);
+}
+
+.search-card :deep(.el-card__body) {
+  padding: 1.25rem;
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 0;
+  padding: 0 1rem;
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.search-input {
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input :deep(.el-input__wrapper) {
+  box-shadow: none !important;
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color);
+  transition: all 0.2s ease;
+}
+
+.search-input :deep(.el-input__wrapper:hover) {
+  border-color: var(--el-border-color-hover);
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 0 2px var(--el-color-primary-light-8) !important;
+}
+
+.search-input :deep(.el-input__inner) {
+  height: 44px;
+}
+
+.search-button {
+  height: 44px;
+  padding: 0 1.25rem;
+  white-space: nowrap;
+}
+
+.error-message {
+  color: var(--el-color-danger);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.loading-card {
+  border: none;
+  border-radius: 12px;
+  background: var(--el-bg-color);
+  box-shadow: var(--el-box-shadow-light);
+}
+
+.loading-card :deep(.el-card__body) {
+  padding: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.loading-icon {
+  font-size: 1.5rem;
+  color: var(--el-color-primary);
+}
+
+.forecast-card {
+  border: none;
+  border-radius: 12px;
+  background: var(--el-bg-color);
+  box-shadow: var(--el-box-shadow-light);
+}
+
+.forecast-card :deep(.el-card__body) {
+  padding: 1.5rem;
+}
+
+.forecast-container {
+  background: transparent;
+}
+
+.location-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.location-title .el-icon {
+  color: var(--el-color-primary);
+}
+
+.forecast-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 1.25rem 0;
+  }
+
+  .header-title {
+    font-size: 1.5rem;
+  }
+
+  .main-content {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .search-card :deep(.el-card__body),
+  .loading-card :deep(.el-card__body),
+  .forecast-card :deep(.el-card__body) {
+    padding: 1rem;
+  }
+
+  .location-title {
+    font-size: 1.125rem;
+    margin-bottom: 1.25rem;
+  }
+}
 </style>

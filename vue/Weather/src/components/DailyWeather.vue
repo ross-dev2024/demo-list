@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Umbrella } from '@element-plus/icons-vue'
+
 interface DailyWeatherProps {
   date: number;
   weather: {
@@ -29,6 +31,12 @@ const getDayOfWeek = (timestamp: number): string => {
   return ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
 };
 
+const isWeekend = (timestamp: number): boolean => {
+  const date = new Date(timestamp * 1000);
+  const day = date.getDay();
+  return day === 0 || day === 6;
+};
+
 const getWeatherIcon = (iconCode: string): string => {
   const iconMap: { [key: string]: string } = {
     '01d': '☀️', '01n': '🌙',
@@ -46,33 +54,133 @@ const getWeatherIcon = (iconCode: string): string => {
 </script>
 
 <template>
-  <div class="flex-1 bg-gray-50 rounded-lg p-3 flex flex-col items-center shadow min-w-[140px]">
+  <el-card class="weather-card" shadow="hover">
     <!-- 日付 -->
-    <div class="text-base font-semibold">
-      {{ formatDate(date, { month: 'numeric', day: 'numeric' }) }}
-      <span class="text-gray-600">({{ getDayOfWeek(date) }})</span>
+    <div class="date-container">
+      <div class="date">
+        {{ formatDate(date, { month: 'numeric', day: 'numeric' }) }}
+      </div>
+      <div class="day-of-week" :class="{ 'is-weekend': isWeekend(date) }">
+        ({{ getDayOfWeek(date) }})
+      </div>
     </div>
     
     <!-- 天気アイコンと説明 -->
-    <div class="weather-icon text-4xl my-2">{{ getWeatherIcon(weather.icon) }}</div>
-    <div class="text-xs text-gray-600 mb-2">{{ weather.description }}</div>
+    <div class="weather-icon">
+      {{ getWeatherIcon(weather.icon) }}
+    </div>
+    <div class="weather-description">
+      {{ weather.description }}
+    </div>
     
     <!-- 気温 -->
-    <div class="text-base mb-1">
-      <span class="text-red-600 font-bold">{{ Math.round(temp_max) }}°</span>
-      <span class="text-gray-400 mx-1">/</span>
-      <span class="text-blue-600 font-bold">{{ Math.round(temp_min) }}°</span>
+    <div class="temperature">
+      <span class="temp-max">{{ Math.round(temp_max) }}°</span>
+      <span class="temp-separator">/</span>
+      <span class="temp-min">{{ Math.round(temp_min) }}°</span>
     </div>
     
     <!-- 降水確率 -->
-    <div class="text-xs text-gray-600">
-      {{ Math.round(pop * 100) }}%
+    <div class="precipitation">
+      <el-tag size="small" effect="light" class="precipitation-tag">
+        <el-icon class="precipitation-icon"><Umbrella /></el-icon>
+        {{ Math.round(pop * 100) }}%
+      </el-tag>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <style scoped>
+.weather-card {
+  width: 160px;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.weather-card:hover {
+  transform: translateY(-4px);
+}
+
+.weather-card :deep(.el-card__body) {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.date-container {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.date {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.day-of-week {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.day-of-week.is-weekend {
+  color: #ef4444;
+}
+
 .weather-icon {
+  font-size: 2.5rem;
   line-height: 1;
+  margin: 0.75rem 0;
+  filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07));
+}
+
+.weather-description {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.temperature {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.temp-max {
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.temp-min {
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.temp-separator {
+  color: #d1d5db;
+}
+
+.precipitation {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.precipitation-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #f3f4f6 !important;
+  border: none !important;
+}
+
+.precipitation-icon {
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 </style> 
