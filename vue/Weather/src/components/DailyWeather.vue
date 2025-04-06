@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Umbrella } from '@element-plus/icons-vue'
+import { Umbrella, Close } from '@element-plus/icons-vue'
 
 interface DailyWeatherProps {
   date: number;
@@ -12,6 +12,7 @@ interface DailyWeatherProps {
   temp_max: number;
   temp_min: number;
   pop: number;
+  onDelete?: () => void;
 }
 
 const props = defineProps<DailyWeatherProps>();
@@ -55,6 +56,15 @@ const getWeatherIcon = (iconCode: string): string => {
 
 <template>
   <el-card class="weather-card" shadow="hover">
+    <div class="delete-button" v-if="onDelete">
+      <el-button
+        circle
+        size="small"
+        :icon="Close"
+        @click="onDelete"
+        class="delete-icon"
+      />
+    </div>
     <!-- 日付 -->
     <div class="date-container">
       <div class="date">
@@ -106,6 +116,49 @@ const getWeatherIcon = (iconCode: string): string => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+@media (max-width: 640px) {
+  .weather-card {
+    width: 100%;
+    border-radius: 0;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+    position: relative;
+  }
+
+  .weather-card:last-child {
+    border-bottom: none;
+  }
+
+  .weather-card :deep(.el-card__body) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+  }
+
+  .date-container {
+    margin-bottom: 0;
+    text-align: left;
+    min-width: 80px;
+  }
+
+  .weather-icon {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .weather-description {
+    display: none;
+  }
+
+  .temperature {
+    margin-bottom: 0;
+  }
+
+  .precipitation {
+    width: auto;
+  }
 }
 
 .date-container {
@@ -182,5 +235,26 @@ const getWeatherIcon = (iconCode: string): string => {
 .precipitation-icon {
   font-size: 0.875rem;
   color: #6b7280;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+.delete-icon {
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--el-text-color-secondary);
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.delete-icon:hover {
+  color: var(--el-color-danger);
+  background: var(--el-color-danger-light-9);
 }
 </style> 

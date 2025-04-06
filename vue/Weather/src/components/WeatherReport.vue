@@ -3,7 +3,8 @@ import { ref, onMounted } from "vue";
 import type { Ref } from 'vue'
 import DailyWeather from './DailyWeather.vue';
 import { ElMessage } from 'element-plus'
-import { Search, Location } from '@element-plus/icons-vue'
+import { Search, Location, Close } from '@element-plus/icons-vue'
+import { useWeatherStore } from '../stores/weather'
 import 'element-plus/dist/index.css'
 
 // Nominatim APIのレスポンス型定義 (必要な部分のみ)
@@ -84,13 +85,9 @@ type DailyForecast = {
   pop: number;
 };
 
-const dailyForecast = ref<DailyForecast[]>();
-const currentPlace = ref<{ name: string, region: string, country: string } | null>(null);
-const searchQuery = ref('');
-const isLoading = ref(false);
-const error = ref('');
-
-const OWM_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+const weatherStore = useWeatherStore()
+const searchQuery = ref('')
+const OWM_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
 
 // Nominatim APIで地名から緯度経度を取得する関数
 const getCoordinates = async (query: string): Promise<{ lat: string, lon: string, name: string }> => {
@@ -173,35 +170,45 @@ const fetchWeatherForecast = async (lat: string, lon: string): Promise<DailyFore
 
 const handleSearch = async () => {
   if (!searchQuery.value) {
-    error.value = '検索する地名を入力してください';
-    return;
+    ElMessage.warning('検索する地名を入力してください')
+    return
   }
   
-  isLoading.value = true;
-  error.value = '';
-  dailyForecast.value = undefined;
-  currentPlace.value = null;
+  weatherStore.isLoading = true
+  weatherStore.error = ''
   
   try {
-    const { lat, lon, name } = await getCoordinates(searchQuery.value);
-    currentPlace.value = { name, region: "", country: "" };
-
-    const forecastData = await fetchWeatherForecast(lat, lon);
-    dailyForecast.value = forecastData;
+    const { lat, lon, name } = await getCoordinates(searchQuery.value)
+    const forecastData = await fetchWeatherForecast(lat, lon)
+    
+    weatherStore.addForecast({
+      place: { name, region: "", country: "" },
+      forecast: forecastData
+    })
+    
+    searchQuery.value = ''
+    ElMessage.success(`${name}の天気予報を追加しました`)
 
   } catch (e) {
-    error.value = e instanceof Error ? e.message : '検索中にエラーが発生しました';
-    console.error('検索処理エラー:', e);
+    const errorMessage = e instanceof Error ? e.message : '検索中にエラーが発生しました'
+    weatherStore.error = errorMessage
+    ElMessage.error(errorMessage)
+    console.error('検索処理エラー:', e)
   } finally {
-    isLoading.value = false;
+    weatherStore.isLoading = false
   }
-};
+}
+
+const handleDeleteForecast = (placeName: string) => {
+  weatherStore.removeForecast(placeName)
+  ElMessage.success(`${placeName}の天気予報を削除しました`)
+}
 
 onMounted(async () => {
-  searchQuery.value = "横浜";
-  await handleSearch();
-  searchQuery.value = "";
-});
+  searchQuery.value = "横浜"
+  await handleSearch()
+  searchQuery.value = ""
+})
 </script>
 
 <template>
@@ -210,7 +217,7 @@ onMounted(async () => {
     <header class="header">
       <div class="header-content">
         <h1 class="header-title">天気予報</h1>
-        <p class="header-subtitle">素敵な旅のために、目的地の天気をチェックしよう！</p>
+        <p class="header-subtitle">素敵な旅のために、目的地の天気を一覧にしよう！</p>
       </div>
     </header>
 
@@ -229,19 +236,19 @@ onMounted(async () => {
             />
             <el-button
               type="primary"
-              :loading="isLoading"
+              :loading="weatherStore.isLoading"
               @click="handleSearch"
               class="search-button"
             >
               検索
             </el-button>
           </div>
-          <p v-if="error" class="error-message">{{ error }}</p>
+          <p v-if="weatherStore.error" class="error-message">{{ weatherStore.error }}</p>
         </div>
       </el-card>
 
       <!-- ローディング表示 -->
-      <el-card v-if="isLoading" class="loading-card">
+      <el-card v-if="weatherStore.isLoading" class="loading-card">
         <div class="loading-container">
           <el-icon class="is-loading loading-icon"><Loading /></el-icon>
           <span>天気情報を取得中...</span>
@@ -249,22 +256,33 @@ onMounted(async () => {
       </el-card>
 
       <!-- 天気予報の表示 -->
-      <el-card v-if="dailyForecast && currentPlace && !isLoading" class="forecast-card">
-        <div class="forecast-container">
-          <h2 class="location-title">
-            <el-icon><Location /></el-icon>
-            {{ currentPlace.name }}の天気予報
-          </h2>
-          
-          <div class="forecast-cards">
-            <DailyWeather
-              v-for="day in dailyForecast"
-              :key="day.date"
-              v-bind="day"
+      <template v-for="forecast in weatherStore.forecasts" :key="forecast.place.name">
+        <el-card class="forecast-card">
+          <div class="delete-button">
+            <el-button
+              circle
+              size="small"
+              :icon="Close"
+              @click="handleDeleteForecast(forecast.place.name)"
+              class="delete-icon"
             />
           </div>
-        </div>
-      </el-card>
+          <div class="forecast-container">
+            <h2 class="location-title">
+              <el-icon><Location /></el-icon>
+              {{ forecast.place.name }}の天気予報
+            </h2>
+            
+            <div class="forecast-cards">
+              <DailyWeather
+                v-for="day in forecast.forecast"
+                :key="day.date"
+                v-bind="day"
+              />
+            </div>
+          </div>
+        </el-card>
+      </template>
     </main>
   </div>
 </template>
@@ -400,6 +418,28 @@ onMounted(async () => {
   border-radius: 12px;
   background: var(--el-bg-color);
   box-shadow: var(--el-box-shadow-light);
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+}
+
+.delete-icon {
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--el-text-color-secondary);
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.delete-icon:hover {
+  color: var(--el-color-danger);
+  background: var(--el-color-danger-light-9);
 }
 
 .forecast-card :deep(.el-card__body) {
