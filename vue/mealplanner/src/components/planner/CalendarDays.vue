@@ -8,10 +8,11 @@ import {usePlannerStore} from "@/stores/planner";
 import {useCacheStore} from "@/stores/cache";
 import CalendarCard from "@/components/planner/CalendarCard.vue";
 import RecipeSearch from "@/components/planner/RecipeSearch.vue";
+import { useI18n } from "vue-i18n";
 
 const store = usePlannerStore();
-
 const cacheStore = useCacheStore();
+const { t } = useI18n();
 
 interface Today {
   id: number;
@@ -96,7 +97,7 @@ const insertRecipeOnDay = (recipe: RecipeResults): void => {
   <v-table>
     <thead>
     <tr>
-      <th class="text-left">近いうちに</th>
+      <th class="text-left">{{ t('common.soon') }}</th>
     </tr>
     </thead>
     <tbody>
@@ -109,13 +110,10 @@ const insertRecipeOnDay = (recipe: RecipeResults): void => {
   </v-table>
   <v-dialog v-model="dialogVisible" scrollable>
     <v-card>
-      <v-card-title>この日に追加するレシピを探す</v-card-title>
+      <v-card-title>{{ t('common.searchRecipe') }}</v-card-title>
       <recipe-search @recipeSelected="insertRecipeOnDay"/>
       <v-card-actions>
-        <v-btn color="primary" block @click="recipeDialogClose"
-        >閉じる
-        </v-btn
-        >
+        <v-btn color="primary" block @click="recipeDialogClose">{{ t('common.close') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

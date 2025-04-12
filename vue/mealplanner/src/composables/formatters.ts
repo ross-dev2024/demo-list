@@ -1,3 +1,5 @@
+import { useI18n } from 'vue-i18n'
+
 const getOrdinalSuffix = (day: number): string => {
   const suffixes = ["th", "st", "nd", "rd"];
   const remainder = day % 100;
@@ -7,14 +9,14 @@ const getOrdinalSuffix = (day: number): string => {
 
 
 function formatDate(date: Date): string {
+  const { t } = useI18n()
   const month = date.getMonth() + 1; // 月は0から始まるため+1;
   const day = date.getDate();
-  return `${month}月${day}日`;
+  return t('date.format', { month, day });
 }
 
 
 export const useFormatDate = (date: Date): string => {
-
   const formattedDate = formatDate(date);
   console.log(formattedDate); // 出力例: 2月15日
   return formattedDate;
