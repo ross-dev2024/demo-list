@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 interface Recipe {
   id: number
@@ -12,38 +13,42 @@ interface DayPlan {
   recipes: Recipe[]
 }
 
-interface PlannerState {
-  mealPlan: {
-    [key: string]: DayPlan
-  }
+interface MealPlan {
+  [key: string]: DayPlan
 }
 
-export const usePlannerStore = defineStore('planner', {
-  state: (): PlannerState => ({
-    mealPlan: {
-      MONDAY: { recipes: [] },
-      TUESDAY: { recipes: [] },
-      WEDNESDAY: { recipes: [] },
-      THURSDAY: { recipes: [] },
-      FRIDAY: { recipes: [] },
-      SATURDAY: { recipes: [] },
-      SUNDAY: { recipes: [] }
-    }
-  }),
+export const usePlannerStore = defineStore('planner', () => {
+  const mealPlan = ref<MealPlan>({
+    'MONDAY': { recipes: [] },
+    'TUESDAY': { recipes: [] },
+    'WEDNESDAY': { recipes: [] },
+    'THURSDAY': { recipes: [] },
+    'FRIDAY': { recipes: [] },
+    'SATURDAY': { recipes: [] },
+    'SUNDAY': { recipes: [] }
+  })
 
-  actions: {
-    addRecipe(day: string, recipe: Recipe) {
-      this.mealPlan[day].recipes.push(recipe)
-    },
+  function addRecipe(day: string, recipe: Recipe) {
+    mealPlan.value[day].recipes.push({ ...recipe })
+  }
 
-    removeRecipe(day: string, recipeId: number) {
-      this.mealPlan[day].recipes = this.mealPlan[day].recipes.filter(
-        recipe => recipe.id !== recipeId
-      )
-    },
+  function removeRecipe(day: string, index: number) {
+    mealPlan.value[day].recipes.splice(index, 1)
+  }
 
-    clearDay(day: string) {
-      this.mealPlan[day].recipes = []
-    }
+  function updateRecipe(day: string, index: number, recipe: Recipe) {
+    mealPlan.value[day].recipes[index] = { ...recipe }
+  }
+
+  function getRecipesForDay(day: string): Recipe[] {
+    return mealPlan.value[day].recipes
+  }
+
+  return {
+    mealPlan,
+    addRecipe,
+    removeRecipe,
+    updateRecipe,
+    getRecipesForDay
   }
 }) 

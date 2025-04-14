@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-interface Recipe {
+export interface Recipe {
   id: number
   name: string
   cookingTime: string

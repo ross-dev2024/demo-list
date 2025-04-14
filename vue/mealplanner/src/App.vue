@@ -1,3 +1,7 @@
+<!--
+  @author: wangjw.dev
+  @description: Main application component
+-->
 <script lang="ts">
 import { defineComponent } from 'vue'
 
@@ -9,28 +13,18 @@ export default defineComponent({
 <script setup lang="ts">
 // Component name needs to be defined for KeepAlive to work
 import Home from './views/Home.vue'
+import AppHeader from './components/AppHeader.vue'
 </script>
 
 <template>
-  <div class="app">
-    <el-container>
-      <el-header>
-        <el-menu mode="horizontal" router>
-          <el-menu-item index="/">EatWell101</el-menu-item>
-          <el-menu-item index="/planner">Meal Planner</el-menu-item>
-          <el-menu-item index="/recipes">Recipes</el-menu-item>
-        </el-menu>
-      </el-header>
-      
-      <el-main>
-        <router-view v-slot="{ Component }">
-          <keep-alive :include="['Home']">
-            <component :is="Component" />
-          </keep-alive>
-        </router-view>
-      </el-main>
-    </el-container>
-  </div>
+  <el-container>
+    <el-header class="fixed-header">
+      <AppHeader />
+    </el-header>
+    <el-main class="main-content">
+      <router-view></router-view>
+    </el-main>
+  </el-container>
 </template>
 
 <style>
@@ -53,16 +47,24 @@ body {
   flex-direction: column;
 }
 
-.el-header {
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
   padding: 0;
+  height: auto !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+  padding-top: 80px;
+  min-height: calc(100vh - 60px);
 }
 
 .el-main {
-  max-width: none;
-  margin: 0;
-  padding: 40px 0;
-  overflow-y: auto;
-  height: calc(100vh - 60px);
-  flex: 1;
+  padding: 20px;
 }
 </style>

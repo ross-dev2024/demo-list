@@ -8,9 +8,10 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { List, Calendar, Download, Search, Timer, Food } from '@element-plus/icons-vue'
+import { List, Calendar, Download, Search, Timer, Food, Star } from '@element-plus/icons-vue'
 import { usePlannerStore } from '../stores/planner'
 import { useRecipeStore } from '../stores/recipe'
+import { useFavoriteStore } from '../stores/favorite'
 import AppHeader from '../components/AppHeader.vue'
 import cookingPotSvg from '../assets/images/cooking-pot.svg'
 import mealPlannerSvg from '../assets/images/meal-planner.svg'
@@ -18,6 +19,7 @@ import groceryBagSvg from '../assets/images/grocery-bag.svg'
 
 const plannerStore = usePlannerStore()
 const recipeStore = useRecipeStore()
+const favoriteStore = useFavoriteStore()
 
 // サンプル画像のインポート
 const defaultImage = 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format'
@@ -47,6 +49,14 @@ const handleDaySelect = (day: string) => {
     plannerStore.addRecipe(day, recipeStore.selectedRecipe)
     showDaySelector.value = false
     recipeStore.setSelectedRecipe(null)
+  }
+}
+
+const toggleFavorite = (recipe: any) => {
+  if (favoriteStore.isFavorite(recipe.id)) {
+    favoriteStore.removeFromFavorites(recipe.id)
+  } else {
+    favoriteStore.addToFavorites(recipe)
   }
 }
 </script>
@@ -138,9 +148,23 @@ const handleDaySelect = (day: string) => {
                   {{ recipe.calories }}
                 </span>
               </div>
-              <el-button type="primary" class="add-button" @click="addToPlanner(recipe)">
-                Add to Planner
-              </el-button>
+              <div class="button-group">
+                <el-button
+                  type="primary"
+                  class="add-button"
+                  @click="addToPlanner(recipe)"
+                >
+                  Add to Planner
+                </el-button>
+                <el-button
+                  :type="favoriteStore.isFavorite(recipe.id) ? 'success' : 'default'"
+                  class="favorite-button"
+                  @click="toggleFavorite(recipe)"
+                >
+                  <el-icon><Star /></el-icon>
+                  {{ favoriteStore.isFavorite(recipe.id) ? 'Favorited' : 'Add to Favorite' }}
+                </el-button>
+              </div>
             </div>
           </el-card>
         </el-col>
@@ -179,43 +203,46 @@ const handleDaySelect = (day: string) => {
   padding: 0 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 h1 {
   font-size: 2.5rem;
   text-align: center;
   color: #2c3e50;
-  margin-bottom: 10px;
-  margin-top: 20px;
+  margin: 20px 0 10px;
 }
 
 .subtitle {
   text-align: center;
   color: #666;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 30px;
   font-size: 1.1rem;
   line-height: 1.4;
 }
 
 .features {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin: 0 0 0px;
 }
 
 .el-card {
   height: 100%;
-  padding: 15px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.el-card:hover {
+  transform: translateY(-2px);
 }
 
 .feature-content {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .feature-number {
@@ -240,7 +267,7 @@ h1 {
 
 .feature-image {
   text-align: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .feature-image img {
@@ -253,14 +280,12 @@ h1 {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
-  position: relative;
+  padding: 0;
 }
 
 .search-box {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
   background-color: white;
   padding: 15px;
   border-radius: 8px;
@@ -292,10 +317,19 @@ h1 {
   padding: 10px 0;
 }
 
+.el-row {
+  margin-bottom: 40px !important;
+}
+
+.el-col {
+  margin-bottom: 60px;
+}
+
 .recipe-card {
   overflow: hidden;
-  margin-bottom: 20px;
   transition: transform 0.3s;
+  height: 100%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .recipe-card:hover {
@@ -348,8 +382,24 @@ h1 {
   gap: 4px;
 }
 
-.add-button {
+.button-group {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+}
+
+.add-button,
+.favorite-button {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+}
+
+.favorite-button .el-icon {
+  margin-right: 4px;
 }
 
 .el-icon {
@@ -388,4 +438,9 @@ h1 {
   border-color: #e6a23c;
   color: #e6a23c;
 }
-</style> 
+</style>
+
+<!--
+  @author: wangjw.dev
+  @description: Home page component with recipe search and display
+--> 
