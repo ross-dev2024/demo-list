@@ -179,7 +179,7 @@ const handleDaySelect = (day: string) => {
   padding: 0 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 5px;
 }
 
 h1 {
@@ -197,11 +197,12 @@ h1 {
   margin: 0 auto;
   font-size: 1.1rem;
   line-height: 1.4;
+  margin-bottom: 10px;
 }
 
 .features {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .el-card {
@@ -253,16 +254,16 @@ h1 {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 5px;
   position: relative;
 }
 
 .search-box {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   background-color: white;
-  padding: 15px;
+  padding: 12px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
@@ -292,10 +293,19 @@ h1 {
   padding: 10px 0;
 }
 
+.el-row {
+  margin-bottom: 40px !important;
+}
+
+.el-col {
+  margin-bottom: 60px;
+}
+
 .recipe-card {
   overflow: hidden;
-  margin-bottom: 20px;
   transition: transform 0.3s;
+  height: 100%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .recipe-card:hover {
