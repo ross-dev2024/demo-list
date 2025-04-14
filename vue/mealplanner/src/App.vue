@@ -1,21 +1,14 @@
 <script setup lang="ts">
-// import AppMenu from "@/components/AppMenu.vue";
 </script>
 
 <template>
-  <v-layout>
-    <!-- <AppMenu /> -->
-    <v-container class="main">
-      <main>
-        <router-view />
-      </main>
-    </v-container>
-    <v-footer app><span class="text-light-green">My Meal Planner</span>&nbsp;- &copy; {{ new Date().getFullYear() }}</v-footer>
-  </v-layout>
+  <router-view></router-view>
 </template>
 
-<style scoped>
-/* .main {
-  margin: 80px auto 40px;
-} */
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 </style>
