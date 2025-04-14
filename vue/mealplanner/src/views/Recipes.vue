@@ -1,176 +1,100 @@
 <template>
-  <div class="recipes">
-    <el-container>
-      <el-header>
-        <el-menu mode="horizontal" router>
-          <el-menu-item index="/">EatWell101</el-menu-item>
-          <el-menu-item index="/planner">Meal Planner</el-menu-item>
-          <el-menu-item index="/recipes">Recipes</el-menu-item>
-        </el-menu>
-      </el-header>
-      
-      <el-main>
-        <div class="search-section">
-          <el-input
-            v-model="searchQuery"
-            placeholder="Search recipes..."
-            class="search-input"
-          >
-            <template #prefix>
-              <el-icon><Search /></el-icon>
-            </template>
-          </el-input>
-          
-          <div class="filters">
-            <el-select v-model="selectedCategory" placeholder="Category">
-              <el-option
-                v-for="category in categories"
-                :key="category"
-                :label="category"
-                :value="category"
-              />
-            </el-select>
-            
-            <el-select v-model="selectedDiet" placeholder="Diet">
-              <el-option
-                v-for="diet in diets"
-                :key="diet"
-                :label="diet"
-                :value="diet"
-              />
-            </el-select>
-          </div>
-        </div>
-        
-        <el-row :gutter="20">
-          <el-col
-            v-for="recipe in filteredRecipes"
-            :key="recipe.id"
-            :xs="24"
-            :sm="12"
-            :md="8"
-            :lg="6"
-          >
-            <el-card :body-style="{ padding: '0px' }" class="recipe-card">
-              <el-image :src="recipe.image" class="recipe-image" />
-              <div class="recipe-info">
-                <h3>{{ recipe.name }}</h3>
-                <p>{{ recipe.description }}</p>
-                <div class="recipe-footer">
-                  <span>{{ recipe.cookingTime }} min</span>
-                  <el-button type="primary" @click="addToPlanner(recipe)">
-                    Add to Planner
-                  </el-button>
-                </div>
+  <div class="content-wrapper">
+    <div class="recipes-header">
+      <h1>Recipes</h1>
+      <div class="header-actions">
+        <el-button type="primary" :icon="Plus">Add New Recipe</el-button>
+      </div>
+    </div>
+
+    <div class="recipes-content">
+      <!-- レシピ一覧 -->
+      <el-row :gutter="30">
+        <el-col v-for="recipe in recipes" :key="recipe.id" :span="6">
+          <el-card class="recipe-card" :body-style="{ padding: '0px' }">
+            <div class="recipe-image-container">
+              <img :src="recipe.image" class="recipe-image" :alt="recipe.name" />
+            </div>
+            <div class="recipe-info">
+              <h3>{{ recipe.name }}</h3>
+              <div class="recipe-meta">
+                <span>
+                  <el-icon><Timer /></el-icon>
+                  {{ recipe.cookingTime }}
+                </span>
+                <span>
+                  <el-icon><Food /></el-icon>
+                  {{ recipe.calories }}
+                </span>
               </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
+              <div class="recipe-actions">
+                <el-button type="primary" @click="editRecipe(recipe)">Edit</el-button>
+                <el-button type="danger" @click="deleteRecipe(recipe.id)">Delete</el-button>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Search } from '@element-plus/icons-vue'
+import { ref } from 'vue'
+import { Timer, Food, Plus } from '@element-plus/icons-vue'
 
-const searchQuery = ref('')
-const selectedCategory = ref('')
-const selectedDiet = ref('')
-
-const categories = [
-  'Breakfast',
-  'Lunch',
-  'Dinner',
-  'Appetizers',
-  'Desserts'
-]
-
-const diets = [
-  'All',
-  'Vegetarian',
-  'Vegan',
-  'Gluten-free',
-  'Keto',
-  'Paleo'
-]
-
-// Mock recipes data
 const recipes = ref([
   {
     id: 1,
     name: 'Baked Fish with Lemon Butter',
-    description: 'Delicious baked fish with fresh lemon and herbs',
-    image: 'https://placehold.co/400x300?text=Fish+Recipe',
-    cookingTime: 30,
-    category: 'Dinner',
-    diet: 'Gluten-free'
+    cookingTime: '10 min',
+    calories: '166 cal',
+    image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format'
   },
   {
     id: 2,
-    name: 'Vegetarian Pasta',
-    description: 'Fresh pasta with seasonal vegetables',
-    image: 'https://placehold.co/400x300?text=Pasta+Recipe',
-    cookingTime: 25,
-    category: 'Dinner',
-    diet: 'Vegetarian'
-  },
-  {
-    id: 3,
-    name: 'Keto Breakfast Bowl',
-    description: 'High protein, low carb breakfast bowl',
-    image: 'https://placehold.co/400x300?text=Breakfast+Bowl',
-    cookingTime: 15,
-    category: 'Breakfast',
-    diet: 'Keto'
+    name: 'Roasted Halibut Fish Tacos',
+    cookingTime: '15 min',
+    calories: '137 cal',
+    image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=500&auto=format'
   }
 ])
 
-const filteredRecipes = computed(() => {
-  return recipes.value.filter(recipe => {
-    const matchesSearch = recipe.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesCategory = !selectedCategory.value || recipe.category === selectedCategory.value
-    const matchesDiet = !selectedDiet.value || selectedDiet.value === 'All' || recipe.diet === selectedDiet.value
-    return matchesSearch && matchesCategory && matchesDiet
-  })
-})
+const editRecipe = (recipe: any) => {
+  console.log('Edit recipe:', recipe)
+}
 
-const addToPlanner = (recipe: any) => {
-  // TODO: Implement add to planner functionality
-  console.log('Adding to planner:', recipe)
+const deleteRecipe = (id: number) => {
+  recipes.value = recipes.value.filter(recipe => recipe.id !== id)
 }
 </script>
 
 <style scoped>
-.recipes {
-  min-height: 100vh;
-}
-
-.el-header {
-  padding: 0;
-}
-
-.el-main {
+.content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 0 40px;
 }
 
-.search-section {
+.recipes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 40px;
 }
 
-.search-input {
-  margin-bottom: 20px;
+.recipes-header h1 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0;
 }
 
-.filters {
-  display: flex;
-  gap: 20px;
+.recipes-content {
+  margin-bottom: 40px;
 }
 
 .recipe-card {
+  overflow: hidden;
   margin-bottom: 20px;
   transition: transform 0.3s;
 }
@@ -179,34 +103,62 @@ const addToPlanner = (recipe: any) => {
   transform: translateY(-5px);
 }
 
-.recipe-image {
+.recipe-image-container {
   width: 100%;
   height: 200px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f5f5f5;
+}
+
+.recipe-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.recipe-card:hover .recipe-image {
+  transform: scale(1.05);
 }
 
 .recipe-info {
-  padding: 20px;
+  padding: 15px;
 }
 
 .recipe-info h3 {
   margin: 0 0 10px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #2c3e50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.recipe-info p {
+.recipe-meta {
+  display: flex;
+  justify-content: space-between;
   color: #666;
+  font-size: 0.9rem;
   margin-bottom: 15px;
 }
 
-.recipe-footer {
+.recipe-meta span {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 4px;
 }
 
-.recipe-footer span {
-  color: #999;
+.recipe-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.recipe-actions .el-button {
+  flex: 1;
+}
+
+.el-icon {
+  vertical-align: middle;
 }
 </style> 
