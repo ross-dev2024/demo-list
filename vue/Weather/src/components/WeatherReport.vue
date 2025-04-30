@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import type { Ref } from 'vue'
+/**
+ * @author ross.dev
+ */
+import {onMounted, ref} from "vue";
 import DailyWeather from './DailyWeather.vue';
-import { ElMessage } from 'element-plus'
-import { Search, Location, Close } from '@element-plus/icons-vue'
-import { useWeatherStore } from '../stores/weather'
+import {ElMessage} from 'element-plus'
+import {Close, Loading, Location, Search} from '@element-plus/icons-vue'
+import {useWeatherStore} from '../stores/weather'
 import 'element-plus/dist/index.css'
 
 // Nominatim APIのレスポンス型定義 (必要な部分のみ)
@@ -94,26 +96,26 @@ const getCoordinates = async (query: string): Promise<{ lat: string, lon: string
   console.log('Geocoding Query:', query);
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&accept-language=ja&limit=1&addressdetails=1`
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&accept-language=ja&limit=1&addressdetails=1`
     );
 
     if (!response.ok) {
       throw new Error('地名の検索に失敗しました');
     }
 
-    const results: any = await response.json();
+    const results = await response.json() as NominatimResult;
 
     if (results.length === 0 || !results[0].lat || !results[0].lon) {
       throw new Error('指定された地名が見つかりませんでした。');
     }
 
-    const { lat, lon, address } = results[0];
+    const {lat, lon, address} = results[0];
     const name = address?.city || address?.town || address?.village || address?.county || query;
     const region = address?.state || "";
     const country = address?.country || "";
 
     console.log('Coordinates:', `${lat},${lon}`, 'Name:', name);
-    return { lat, lon, name: `${name}, ${region ? region + ', ' : ''}${country}` };
+    return {lat, lon, name: `${name}, ${region ? region + ', ' : ''}${country}`};
 
   } catch (error) {
     console.error('ジオコーディングエラー:', error);
@@ -126,7 +128,7 @@ const fetchWeatherForecast = async (lat: string, lon: string): Promise<DailyFore
   console.log('Weather API Query:', `lat=${lat}, lon=${lon}`);
   try {
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OWM_API_KEY}&units=metric&lang=ja`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OWM_API_KEY}&units=metric&lang=ja`
     );
 
     if (!response.ok) {
@@ -137,14 +139,14 @@ const fetchWeatherForecast = async (lat: string, lon: string): Promise<DailyFore
     }
 
     const data: OpenWeatherMapForecastData = await response.json();
-    
+
     // 日付ごとにデータを整理
     const dailyData = new Map<string, DailyForecast>();
-    
+
     data.list.forEach(forecast => {
       const date = new Date(forecast.dt * 1000);
       const dateKey = date.toISOString().split('T')[0];
-      
+
       if (!dailyData.has(dateKey)) {
         dailyData.set(dateKey, {
           date: forecast.dt,
@@ -173,19 +175,19 @@ const handleSearch = async () => {
     ElMessage.warning('検索する地名を入力してください')
     return
   }
-  
+
   weatherStore.isLoading = true
   weatherStore.error = ''
-  
+
   try {
-    const { lat, lon, name } = await getCoordinates(searchQuery.value)
+    const {lat, lon, name} = await getCoordinates(searchQuery.value)
     const forecastData = await fetchWeatherForecast(lat, lon)
-    
+
     weatherStore.addForecast({
-      place: { name, region: "", country: "" },
+      place: {name, region: "", country: ""},
       forecast: forecastData
     })
-    
+
     searchQuery.value = ''
     ElMessage.success(`${name}の天気予報を追加しました`)
 
@@ -228,17 +230,17 @@ onMounted(async () => {
         <div class="search-container">
           <div class="search-form">
             <el-input
-              v-model="searchQuery"
-              placeholder="地名を入力（例：横浜、新宿、etc...）複数入力可"
-              :prefix-icon="Search"
-              @keyup.enter="handleSearch"
-              class="search-input"
+                v-model="searchQuery"
+                placeholder="地名を入力（例：横浜、新宿、etc...）複数入力可"
+                :prefix-icon="Search"
+                @keyup.enter="handleSearch"
+                class="search-input"
             />
             <el-button
-              type="primary"
-              :loading="weatherStore.isLoading"
-              @click="handleSearch"
-              class="search-button"
+                type="primary"
+                :loading="weatherStore.isLoading"
+                @click="handleSearch"
+                class="search-button"
             >
               検索
             </el-button>
@@ -250,7 +252,9 @@ onMounted(async () => {
       <!-- ローディング表示 -->
       <el-card v-if="weatherStore.isLoading" class="loading-card">
         <div class="loading-container">
-          <el-icon class="is-loading loading-icon"><Loading /></el-icon>
+          <el-icon class="is-loading loading-icon">
+            <Loading/>
+          </el-icon>
           <span>天気情報を取得中...</span>
         </div>
       </el-card>
@@ -260,24 +264,26 @@ onMounted(async () => {
         <el-card class="forecast-card">
           <div class="delete-button">
             <el-button
-              circle
-              size="small"
-              :icon="Close"
-              @click="handleDeleteForecast(forecast.place.name)"
-              class="delete-icon"
+                circle
+                size="small"
+                :icon="Close"
+                @click="handleDeleteForecast(forecast.place.name)"
+                class="delete-icon"
             />
           </div>
           <div class="forecast-container">
             <h2 class="location-title">
-              <el-icon><Location /></el-icon>
+              <el-icon>
+                <Location/>
+              </el-icon>
               {{ forecast.place.name }}の天気予報
             </h2>
-            
+
             <div class="forecast-cards">
               <DailyWeather
-                v-for="day in forecast.forecast"
-                :key="day.date"
-                v-bind="day"
+                  v-for="day in forecast.forecast"
+                  :key="day.date"
+                  v-bind="day"
               />
             </div>
           </div>

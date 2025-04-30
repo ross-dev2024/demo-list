@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * @author ross.dev
+ */
 import WeatherReport from "./components/WeatherReport.vue";
 </script>
 
