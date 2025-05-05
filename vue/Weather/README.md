@@ -2,8 +2,15 @@
 
 Vue 3 + TypeScriptで作成された、複数地域の天気予報を表示できるシンプルなウェブアプリケーションです。
 
+## スクリーンショット
 
-![img.png](img.png)
+- デスクトップ表示:
+<img src="img.png" alt="デスクトップ表示" width="600" />
+
+
+- モバイル表示:　　
+
+<img src="phone.png" alt="モバイル表示" width="300" />
 
 ## 機能
 
@@ -34,6 +41,29 @@ npm run dev
 # ビルド
 npm run build
 ```
+
+## 使用しているAPI
+
+### OpenWeatherMap API
+- **用途**: 天気予報データの取得
+- **エンドポイント**: `https://api.openweathermap.org/data/2.5/forecast`
+- **データ**: 5日間の天気予報（3時間ごと）
+- **取得情報**: 
+  - 気温（最高・最低）
+  - 天気状態
+  - 降水確率
+  - 風速
+  - 湿度
+- **料金プラン**: Free tier (60回/分のリクエスト制限)
+
+### Nominatim API (OpenStreetMap)
+- **用途**: 地名から緯度経度への変換（ジオコーディング）
+- **エンドポイント**: `https://nominatim.openstreetmap.org/search`
+- **データ**: 地名の検索結果
+- **取得情報**:
+  - 緯度・経度
+  - 表示名
+- **料金プラン**: 無料（1秒に1リクエストの制限）
 
 ## 環境変数
 

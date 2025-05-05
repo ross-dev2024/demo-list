@@ -109,13 +109,10 @@ const getCoordinates = async (query: string): Promise<{ lat: string, lon: string
       throw new Error('指定された地名が見つかりませんでした。');
     }
 
-    const {lat, lon, address} = results[0];
-    const name = address?.city || address?.town || address?.village || address?.county || query;
-    const region = address?.state || "";
-    const country = address?.country || "";
-
+    const {lat, lon, display_name} = results[0];
+    const name = display_name || query;
     console.log('Coordinates:', `${lat},${lon}`, 'Name:', name);
-    return {lat, lon, name: `${name}, ${region ? region + ', ' : ''}${country}`};
+    return {lat, lon, name};
 
   } catch (error) {
     console.error('ジオコーディングエラー:', error);
