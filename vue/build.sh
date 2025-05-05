@@ -10,45 +10,80 @@ CURRENT_DIR=$(pwd)
 # Function to display usage information
 show_usage() {
   echo "Usage: $0 [project1] [project2] ..."
-  echo "Available projects: booking, gallery, weather, meal"
-  echo "If no projects are specified, all projects will be built."
-  echo "Example: $0 booking weather"
+  echo "Available projects: booking, gallery, weather, meal, or any custom project name"
+  echo "If no projects are specified, all standard projects will be built."
+  echo "Example: $0 booking weather customproject"
 }
 
 # Function to build BookingHotel project
 build_booking() {
-  echo "Building BookingHotel project..."
-  cd "$CURRENT_DIR/BookingHotel"
-  npm install
-  npm run build
-  BOOKING_BUILT=true
+  if [ -d "$CURRENT_DIR/BookingHotel" ]; then
+    echo "Building BookingHotel project..."
+    cd "$CURRENT_DIR/BookingHotel"
+    npm install
+    npm run build
+    BOOKING_BUILT=true
+  else
+    echo "Error: BookingHotel project folder does not exist."
+    exit 1
+  fi
 }
 
 # Function to build PhotoGallary project
 build_gallery() {
-  echo "Building PhotoGallary project..."
-  cd "$CURRENT_DIR/PhotoGallary"
-  npm install
-  npm run build
-  GALLERY_BUILT=true
+  if [ -d "$CURRENT_DIR/PhotoGallary" ]; then
+    echo "Building PhotoGallary project..."
+    cd "$CURRENT_DIR/PhotoGallary"
+    npm install
+    npm run build
+    GALLERY_BUILT=true
+  else
+    echo "Error: PhotoGallary project folder does not exist."
+    exit 1
+  fi
 }
 
 # Function to build Weather project
 build_weather() {
-  echo "Building Weather project..."
-  cd "$CURRENT_DIR/Weather"
-  npm install --legacy-peer-deps
-  npm run build
-  WEATHER_BUILT=true
+  if [ -d "$CURRENT_DIR/Weather" ]; then
+    echo "Building Weather project..."
+    cd "$CURRENT_DIR/Weather"
+    npm install --legacy-peer-deps
+    npm run build
+    WEATHER_BUILT=true
+  else
+    echo "Error: Weather project folder does not exist."
+    exit 1
+  fi
 }
 
 # Function to build mealplanner project
 build_meal() {
-  echo "Building mealplanner project..."
-  cd "$CURRENT_DIR/mealplanner"
-  npm install
-  npm run build
-  MEAL_BUILT=true
+  if [ -d "$CURRENT_DIR/mealplanner" ]; then
+    echo "Building mealplanner project..."
+    cd "$CURRENT_DIR/mealplanner"
+    npm install
+    npm run build
+    MEAL_BUILT=true
+  else
+    echo "Error: mealplanner project folder does not exist."
+    exit 1
+  fi
+}
+
+# Function to build custom project
+build_custom_project() {
+  local project_name=$1
+  if [ -d "$CURRENT_DIR/$project_name" ]; then
+    echo "Building $project_name project..."
+    cd "$CURRENT_DIR/$project_name"
+    npm install
+    npm run build
+    CUSTOM_PROJECTS["$project_name"]=true
+  else
+    echo "Error: $project_name project folder does not exist."
+    exit 1
+  fi
 }
 
 # Initialize build flags
@@ -57,9 +92,10 @@ GALLERY_BUILT=false
 WEATHER_BUILT=false
 MEAL_BUILT=false
 BUILD_ALL=false
+declare -A CUSTOM_PROJECTS
 
 # Check if help is requested
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   show_usage
   exit 0
 fi
@@ -86,9 +122,7 @@ for arg in "$@"; do
       build_meal
       ;;
     *)
-      echo "Unknown project: $arg"
-      show_usage
-      exit 1
+      build_custom_project "$arg"
       ;;
   esac
 done
@@ -136,5 +170,14 @@ if [ "$MEAL_BUILT" = true ]; then
   cp -r "$CURRENT_DIR/mealplanner/dist/"* "$TARGET_DIR/meal/"
   echo "Copied mealplanner build to $TARGET_DIR/meal/"
 fi
+
+# Copy build results for custom projects
+for project_name in "${!CUSTOM_PROJECTS[@]}"; do
+  if [ "${CUSTOM_PROJECTS[$project_name]}" = true ]; then
+    mkdir -p "$TARGET_DIR/$project_name"
+    cp -r "$CURRENT_DIR/$project_name/dist/"* "$TARGET_DIR/$project_name/"
+    echo "Copied $project_name build to $TARGET_DIR/$project_name/"
+  fi
+done
 
 echo "Build process completed successfully!"
