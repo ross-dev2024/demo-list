@@ -79,7 +79,8 @@ build_custom_project() {
     cd "$CURRENT_DIR/$project_name"
     npm install
     npm run build
-    CUSTOM_PROJECTS["$project_name"]=true
+    # Add project to the list with space separator
+    CUSTOM_PROJECTS_LIST="$CUSTOM_PROJECTS_LIST $project_name"
   else
     echo "Error: $project_name project folder does not exist."
     exit 1
@@ -92,7 +93,8 @@ GALLERY_BUILT=false
 WEATHER_BUILT=false
 MEAL_BUILT=false
 BUILD_ALL=false
-declare -A CUSTOM_PROJECTS
+# Using a simpler approach instead of associative arrays for better shell compatibility
+CUSTOM_PROJECTS_LIST=""
 
 # Check if help is requested
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -172,8 +174,8 @@ if [ "$MEAL_BUILT" = true ]; then
 fi
 
 # Copy build results for custom projects
-for project_name in "${!CUSTOM_PROJECTS[@]}"; do
-  if [ "${CUSTOM_PROJECTS[$project_name]}" = true ]; then
+for project_name in $CUSTOM_PROJECTS_LIST; do
+  if [ -n "$project_name" ]; then
     mkdir -p "$TARGET_DIR/$project_name"
     cp -r "$CURRENT_DIR/$project_name/dist/"* "$TARGET_DIR/$project_name/"
     echo "Copied $project_name build to $TARGET_DIR/$project_name/"
