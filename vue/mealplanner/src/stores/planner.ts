@@ -28,6 +28,9 @@ export const usePlannerStore = defineStore('planner', () => {
     'SUNDAY': { recipes: [] }
   })
 
+  const showDaySelector = ref(false)
+  const selectedRecipe = ref<Recipe | null>(null)
+
   function addRecipe(day: string, recipe: Recipe) {
     mealPlan.value[day].recipes.push({ ...recipe })
   }
@@ -46,6 +49,8 @@ export const usePlannerStore = defineStore('planner', () => {
 
   return {
     mealPlan,
+    showDaySelector,
+    selectedRecipe,
     addRecipe,
     removeRecipe,
     updateRecipe,

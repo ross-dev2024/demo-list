@@ -8,11 +8,10 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { List, Calendar, Download, Search, Timer, Food, Star } from '@element-plus/icons-vue'
+import { Search, Timer, Food, Star } from '@element-plus/icons-vue'
 import { usePlannerStore } from '../stores/planner'
 import { useRecipeStore } from '../stores/recipe'
 import { useFavoriteStore } from '../stores/favorite'
-import AppHeader from '../components/AppHeader.vue'
 import cookingPotSvg from '../assets/images/cooking-pot.svg'
 import mealPlannerSvg from '../assets/images/meal-planner.svg'
 import groceryBagSvg from '../assets/images/grocery-bag.svg'
@@ -20,12 +19,6 @@ import groceryBagSvg from '../assets/images/grocery-bag.svg'
 const plannerStore = usePlannerStore()
 const recipeStore = useRecipeStore()
 const favoriteStore = useFavoriteStore()
-
-// サンプル画像のインポート
-const defaultImage = 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format'
-const fishTacosImage = 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=500&auto=format'
-const fishFilletsImage = 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format'
-const easyTacosImage = 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=500&auto=format'
 
 // コンポーネントマウント時にレシピを初期化
 onMounted(() => {
@@ -200,7 +193,7 @@ const toggleFavorite = (recipe: any) => {
 .content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 20px 40px 0 40px;
   display: flex;
   flex-direction: column;
   gap: 10px;

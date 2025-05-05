@@ -12,7 +12,6 @@ export default defineComponent({
 
 <script setup lang="ts">
 // Component name needs to be defined for KeepAlive to work
-import Home from './views/Home.vue'
 import AppHeader from './components/AppHeader.vue'
 </script>
 

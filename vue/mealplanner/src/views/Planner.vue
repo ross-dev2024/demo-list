@@ -144,7 +144,7 @@
 -->
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Calendar, Edit, Delete, Plus, Timer, Food, Search, Check } from '@element-plus/icons-vue'
+import { Edit, Delete, Plus, Timer, Food, Search, Check } from '@element-plus/icons-vue'
 import { usePlannerStore } from '../stores/planner'
 import { useRecipeStore } from '../stores/recipe'
 
@@ -266,7 +266,7 @@ const handleDialogOpen = () => {
 .content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 50px 40px 0 40px;
 }
 
 .planner-header {
