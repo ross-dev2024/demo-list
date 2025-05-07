@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig(({ command }) => ({
+  base: '/gallery/',
   plugins: [vue()],
   server: command === 'serve' ? {
     host: '0.0.0.0',
