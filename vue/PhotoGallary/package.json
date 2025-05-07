@@ -22,15 +22,20 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.24.0",
+    "@types/node": "^22.15.12",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "@vue/compiler-sfc": "^3.4.21",
+    "@vue/eslint-config-typescript": "^14.5.0",
     "electron": "^29.1.0",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.22.0",
     "json-server": "^1.0.0-beta.3",
+    "typescript": "^5.8.3",
     "vue-cli-plugin-electron-builder": "~2.1.1"
   },
   "eslintConfig": {

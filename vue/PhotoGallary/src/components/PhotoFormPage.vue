@@ -61,7 +61,7 @@
               accept="image/*"
             />
             <div v-if="form.photoFile" class="photo-preview-container">
-              <img :src="form.photoFile" class="photo-preview" />
+              <img :src="form.photoFile.preview" class="photo-preview" />
             </div>
           </div>
         </div>
@@ -80,8 +80,7 @@
 </template>
 
 <script>
-import axios from "axios";
-import { APIURL } from "../constant";
+import photosData from '../data/db.json';
 
 export default {
   name: "PhotoForm",
@@ -96,35 +95,46 @@ export default {
     };
   },
   methods: {
-    async submit() {
-      const { name, description, dateTaken, photoFile } = this.form;
-      if (!name || !description || !dateTaken || !photoFile) {
-        alert("All fields are required");
-        return;
-      }
-      const { id } = this.$route.params;
-      if (id) {
-        await axios.put(`${APIURL}/photos/${id}`, this.form);
+    submit() {
+      if (this.$route.params.id) {
+        // 編集モード
+        const index = photosData.photos.findIndex(p => p.id === this.$route.params.id);
+        if (index !== -1) {
+          photosData.photos[index] = {
+            ...this.form,
+            id: this.$route.params.id,
+            photoFile: `/images/${this.form.photoFile.file.name}`
+          };
+        }
       } else {
-        await axios.post(`${APIURL}/photos`, this.form);
+        // 新規追加モード
+        const newId = Math.max(...photosData.photos.map(p => parseInt(p.id))) + 1;
+        photosData.photos.push({
+          ...this.form,
+          id: newId.toString(),
+          photoFile: `/images/${this.form.photoFile.file.name}`
+        });
       }
-      this.$router.push("/");
+      this.$router.push('/');
     },
-    onChange(ev) {
-      const reader = new FileReader();
-      reader.readAsDataURL(ev.target.files[0]);
-      reader.onload = () => {
-        this.form.photoFile = reader.result;
-      };
-    },
-  },
-  async beforeMount() {
-    const { id } = this.$route.params;
-    if (id) {
-      const { data } = await axios.get(`${APIURL}/photos/${id}`);
-      this.form = data;
+    onChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.form.photoFile = {
+          file: file,
+          preview: URL.createObjectURL(file)
+        };
+      }
     }
   },
+  mounted() {
+    if (this.$route.params.id) {
+      const photo = photosData.photos.find(p => p.id === this.$route.params.id);
+      if (photo) {
+        this.form = { ...photo };
+      }
+    }
+  }
 };
 </script>
 

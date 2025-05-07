@@ -56,8 +56,7 @@
 </template>
 
 <script>
-import axios from "axios";
-import { APIURL } from "../constant";
+import photosData from '../data/db.json';
 
 export default {
   name: "SearchPage",
@@ -68,11 +67,16 @@ export default {
     };
   },
   methods: {
-    async search() {
-      const { data } = await axios.get(
-        `${APIURL}/photos?name_like=${this.$route.query.q}`
-      );
-      this.photos = data;
+    search() {
+      if (this.$route.query.q) {
+        const query = this.$route.query.q.toLowerCase();
+        this.photos = photosData.photos.filter(photo => 
+          photo.name.toLowerCase().includes(query) || 
+          photo.description.toLowerCase().includes(query)
+        );
+      } else {
+        this.photos = [];
+      }
     },
     submit() {
       this.$router.push({ path: "/search", query: { q: this.keyword } });
@@ -80,10 +84,13 @@ export default {
     edit(id) {
       this.$router.push({ path: `/edit-photo-form/${id}` });
     },
-    async deletePhoto(id) {
+    deletePhoto(id) {
       if (confirm('この写真を削除してもよろしいですか？')) {
-        await axios.delete(`${APIURL}/photos/${id}`);
-        this.search();
+        const index = photosData.photos.findIndex(p => p.id === id);
+        if (index !== -1) {
+          photosData.photos.splice(index, 1);
+          this.search();
+        }
       }
     },
   },

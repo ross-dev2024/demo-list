@@ -35,8 +35,7 @@
 </template>
 
 <script>
-import axios from "axios";
-import { APIURL } from "../constant";
+import photosData from '../data/db.json';
 
 export default {
   data() {
@@ -45,17 +44,16 @@ export default {
     };
   },
   methods: {
-    async load() {
-      const { data } = await axios.get(`${APIURL}/photos`);
-      this.photos = data;
+    load() {
+      this.photos = photosData.photos;
     },
     edit(id) {
       this.$router.push({ path: `/edit-photo-form/${id}` });
     },
     async deletePhoto(id) {
-      await axios.delete(`${APIURL}/photos/${id}`);
-      this.photos = [];
-      this.load();
+      if (confirm('この写真を削除してもよろしいですか？')) {
+        this.photos = this.photos.filter(p => p.id !== id);
+      }
     },
   },
   beforeMount() {
