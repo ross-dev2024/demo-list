@@ -70,10 +70,15 @@ export default {
     search() {
       if (this.$route.query.q) {
         const query = this.$route.query.q.toLowerCase();
-        this.photos = photosData.photos.filter(photo => 
-          photo.name.toLowerCase().includes(query) || 
-          photo.description.toLowerCase().includes(query)
-        );
+        this.photos = photosData.photos
+          .filter(photo => 
+            photo.name.toLowerCase().includes(query) || 
+            photo.description.toLowerCase().includes(query)
+          )
+          .map(photo => ({
+            ...photo,
+            photoFile: photo.photoFile.replace('/images/', '/gallery/images/')
+          }));
       } else {
         this.photos = [];
       }

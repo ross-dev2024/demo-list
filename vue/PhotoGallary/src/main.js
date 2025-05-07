@@ -6,14 +6,14 @@ import SearchPage from './components/SearchPage';
 import HomePage from './components/HomePage';
 
 const routes = [
+  { path: '/', component: HomePage },
   { path: '/add-photo-form', component: PhotoFormPage },
   { path: '/edit-photo-form/:id', component: PhotoFormPage },
-  { path: '/search', component: SearchPage },
-  { path: '/', component: HomePage },
+  { path: '/search', component: SearchPage }
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/gallery'),
   routes
 })
 

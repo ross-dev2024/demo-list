@@ -10,7 +10,7 @@ const routes = [
     component: HomePage
   },
   {
-    path: '/add',
+    path: '/add-photo-form',
     name: 'AddPhoto',
     component: PhotoFormPage
   },
@@ -22,7 +22,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/gallery/'),
   routes
 });
 

@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b2291f2-98fa-4319-aa08-1dc52d80b13a" name="変更" comment="build script">
-      <change beforePath="$PROJECT_DIR$/mealplanner/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/mealplanner/vite.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PhotoGallary/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/PhotoGallary/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PhotoGallary/src/components/PhotoFormPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/PhotoGallary/src/components/PhotoFormPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PhotoGallary/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/PhotoGallary/src/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PhotoGallary/src/services/photoService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/PhotoGallary/src/services/photoService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,21 +18,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ross-dev2024"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ross-dev2024&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:ross-dev2024/demo-list.git",
-    "accountId": "6cd6c50c-73ff-4ff3-aa2c-94c993ebdaad"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:ross-dev2024/demo-list.git&quot;,
+    &quot;accountId&quot;: &quot;6cd6c50c-73ff-4ff3-aa2c-94c993ebdaad&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2wgGEmcxhCRiDFUU2AgIrGJ1BiQ" />
   <component name="ProjectViewState">
     <option name="flattenModules" value="true" />
@@ -51,6 +54,7 @@
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/wangjw/Dev/Git/ross-dev2024/demo-list/vue/Weather/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -69,6 +73,7 @@
       <option name="presentableId" value="Default" />
       <updated>1746455693463</updated>
       <workItem from="1746455694645" duration="4647000" />
+      <workItem from="1746588427481" duration="2138000" />
     </task>
     <task id="LOCAL-00001" summary="build script">
       <option name="closed" value="true" />
@@ -94,7 +99,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746460980177</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="build script">
+      <option name="closed" value="true" />
+      <created>1746589017599</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746589017599</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -143,6 +143,11 @@ export default {
       return;
     }
 
+    // Ensure the photoFile path includes the base path '/gallery'
+    if (photo.photoFile.startsWith('/images/') && !photo.photoFile.startsWith('/gallery/')) {
+      photo.photoFile = `/gallery${photo.photoFile}`;
+    }
+
     // Create a mapping of photo filenames to fallback URLs
     // In a real implementation, this could be more sophisticated
     const photoUrlMapping: Record<string, string> = {

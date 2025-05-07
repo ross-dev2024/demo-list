@@ -45,7 +45,10 @@ export default {
   },
   methods: {
     load() {
-      this.photos = photosData.photos;
+      this.photos = photosData.photos.map(photo => ({
+        ...photo,
+        photoFile: photo.photoFile.replace('/images/', '/gallery/images/')
+      }));
     },
     edit(id) {
       this.$router.push({ path: `/edit-photo-form/${id}` });
