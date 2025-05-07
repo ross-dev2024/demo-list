@@ -137,42 +137,44 @@ if [ "$BUILD_ALL" = true ]; then
   [ "$MEAL_BUILT" = false ] && build_meal
 fi
 
-# Clean target directory
-echo "Cleaning target directory: $TARGET_DIR"
-if [ -d "$TARGET_DIR" ]; then
-  rm -rf "$TARGET_DIR"/*
-else
+# Create target directory if it doesn't exist
+if [ ! -d "$TARGET_DIR" ]; then
   mkdir -p "$TARGET_DIR"
 fi
+# Function to clean and copy project
+clean_and_copy_project() {
+    local project_flag=$1
+    local target_subdir=$2
+    local source_dir=$3
+    local project_name=$4
+
+    if [ "$project_flag" = true ] && [ -d "$TARGET_DIR/$target_subdir" ]; then
+        echo "Cleaning target directory: $TARGET_DIR/$target_subdir"
+        rm -rf "$TARGET_DIR/$target_subdir"
+    fi
+
+    if [ "$project_flag" = true ]; then
+        mkdir -p "$TARGET_DIR/$target_subdir"
+        cp -r "$CURRENT_DIR/$source_dir/dist/"* "$TARGET_DIR/$target_subdir/"
+        echo "Copied $project_name build to $TARGET_DIR/$target_subdir/"
+    fi
+}
+
+# Clean and copy for each project
+clean_and_copy_project "$BOOKING_BUILT" "booking" "BookingHotel" "BookingHotel"
+clean_and_copy_project "$GALLERY_BUILT" "gallery" "PhotoGallary" "PhotoGallary" 
+clean_and_copy_project "$WEATHER_BUILT" "weather" "Weather" "Weather"
+clean_and_copy_project "$MEAL_BUILT" "meal" "mealplanner" "mealplanner"
+
+# Clean directories for custom projects
+for project_name in $CUSTOM_PROJECTS_LIST; do
+    if [ -n "$project_name" ] && [ -d "$TARGET_DIR/$project_name" ]; then
+        clean_and_copy_project "true" "$project_name" "$project_name" "$project_name"
+    fi
+done
 
 # Copy build results to target directory
 echo "Copying build results to $TARGET_DIR"
-
-# Only create directories and copy files for projects that were built
-if [ "$BOOKING_BUILT" = true ]; then
-  mkdir -p "$TARGET_DIR/booking"
-  cp -r "$CURRENT_DIR/BookingHotel/dist/"* "$TARGET_DIR/booking/"
-  echo "Copied BookingHotel build to $TARGET_DIR/booking/"
-fi
-
-if [ "$GALLERY_BUILT" = true ]; then
-  mkdir -p "$TARGET_DIR/gallery"
-  cp -r "$CURRENT_DIR/PhotoGallary/dist/"* "$TARGET_DIR/gallery/"
-  echo "Copied PhotoGallary build to $TARGET_DIR/gallery/"
-fi
-
-if [ "$WEATHER_BUILT" = true ]; then
-  mkdir -p "$TARGET_DIR/weather"
-  cp -r "$CURRENT_DIR/Weather/dist/"* "$TARGET_DIR/weather/"
-  echo "Copied Weather build to $TARGET_DIR/weather/"
-fi
-
-if [ "$MEAL_BUILT" = true ]; then
-  mkdir -p "$TARGET_DIR/meal"
-  cp -r "$CURRENT_DIR/mealplanner/dist/"* "$TARGET_DIR/meal/"
-  echo "Copied mealplanner build to $TARGET_DIR/meal/"
-fi
-
 # Copy build results for custom projects
 for project_name in $CUSTOM_PROJECTS_LIST; do
   if [ -n "$project_name" ]; then
