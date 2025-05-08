@@ -34,7 +34,7 @@ npm run serve
 
 # APIサーバーの起動（別ターミナルで実行）
 npm run api  
-```
+``` 
 
 ## 使い方
 
