@@ -96,5 +96,5 @@ jobs:
           script: |
             echo "Working directory: ${{ secrets.PROJECT_PATH }}"
             cd ${{ secrets.PROJECT_PATH }}
-            source ~/.bashrc
+            git pull
             ./build.sh ${{ steps.changes.outputs.build_args }}
