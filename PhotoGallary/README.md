@@ -33,7 +33,7 @@ npm install
 npm run serve
 
 # APIサーバーの起動（別ターミナルで実行）
-npm run api 
+npm run api  
 ```
 
 ## 使い方
