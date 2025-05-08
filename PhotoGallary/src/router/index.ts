@@ -21,9 +21,15 @@ const routes = [
   }
 ];
 
+// router/index.ts でトランジション設定を確認し、必要に応じて修正
 const router = createRouter({
   history: createWebHistory('/gallery/'),
-  routes
-});
+  routes,
+  // ...
+  scrollBehavior(to, from, savedPosition) {
+    // スクロール動作の設定を確認
+    return { top: 0 }
+  }
+})
 
 export default router;
