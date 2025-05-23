@@ -47,7 +47,7 @@
     </div>
 
     <div class="planner-footer">
-      <el-button type="success" size="large">
+      <el-button type="success" size="large" @click="downloadMealPlan">
         Download Meal Plan
       </el-button>
     </div>
@@ -259,6 +259,37 @@ const handleDialogOpen = () => {
     recipeStore.initializeRecipes()
   }
   sortBy.value = 'name'
+}
+
+const downloadMealPlan = () => {
+  const mealPlanData = weekDays.map(day => {
+    const recipes = plannerStore.getRecipesForDay(day)
+    return {
+      day,
+      recipes: recipes.map(recipe => ({
+        name: recipe.name,
+        cookingTime: recipe.cookingTime,
+        calories: recipe.calories
+      }))
+    }
+  })
+
+  const content = mealPlanData.map(day => {
+    const recipes = day.recipes.map(recipe => 
+      `- ${recipe.name} (${recipe.cookingTime}, ${recipe.calories})`
+    ).join('\n')
+    return `${day.day}:\n${recipes}`
+  }).join('\n\n')
+
+  const blob = new Blob([content], { type: 'text/plain' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'meal-plan.txt'
+  document.body.appendChild(a)
+  a.click()
+  window.URL.revokeObjectURL(url)
+  document.body.removeChild(a)
 }
 </script>
 
